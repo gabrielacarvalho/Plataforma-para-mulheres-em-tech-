@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: shecode
+      POSTGRES_USER: shecode
+      POSTGRES_PASSWORD: shecode
+    ports:
+      - "5432:5432"
+    volumes:
+      - shecode_data:/var/lib/postgresql/data
+
+volumes:
+  shecode_data:
