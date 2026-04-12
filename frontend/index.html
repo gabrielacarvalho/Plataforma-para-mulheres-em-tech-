@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SheCode — Seu espaço seguro para aprender tech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #fff; color: #1a1a1a; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid #f0d6e0; background: #fff; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 20px; font-weight: 600; color: #993556; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { font-size: 14px; color: #666; text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover { color: #993556; }
+        .btn-primary { background: #993556; color: #fff; border: none; border-radius: 8px; padding: 8px 20px; font-size: 14px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
+        .btn-primary:hover { background: #72243E; }
+        .hero { text-align: center; padding: 5rem 2rem 4rem; background: #FBEAF0; }
+        .hero-badge { display: inline-block; background: #F4C0D1; color: #72243E; font-size: 12px; padding: 4px 16px; border-radius: 999px; margin-bottom: 1.5rem; font-weight: 500; }
+        .hero h1 { font-size: 42px; font-weight: 600; color: #4B1528; line-height: 1.2; margin-bottom: 1.25rem; }
+        .hero p { font-size: 17px; color: #72243E; max-width: 540px; margin: 0 auto 2.5rem; line-height: 1.7; }
+        .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn-outline { background: transparent; color: #993556; border: 1.5px solid #993556; border-radius: 8px; padding: 8px 20px; font-size: 14px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
+        .btn-outline:hover { background: #fdeaf2; }
+        .stats { display: flex; justify-content: center; gap: 4rem; padding: 2.5rem 2rem; border-bottom: 1px solid #f5e0e8; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-number { font-size: 28px; font-weight: 600; color: #993556; }
+        .stat-label { font-size: 13px; color: #888; margin-top: 4px; }
+        .section { padding: 3.5rem 2rem; max-width: 1100px; margin: 0 auto; }
+        .section-title { font-size: 24px; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem; }
+        .section-sub { font-size: 15px; color: #888; margin-bottom: 2rem; }
+        .filter-bar { display: flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap; }
+        .filter-btn { font-size: 13px; background: #f9f0f4; color: #888; border: 1px solid #f0d6e0; border-radius: 999px; padding: 6px 16px; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .filter-btn.active, .filter-btn:hover { background: #993556; color: #fff; border-color: #993556; }
+        .trails-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .trail-card { background: #fff; border: 1px solid #f0d6e0; border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: border-color 0.2s, transform 0.2s; }
+        .trail-card:hover { border-color: #D4537E; transform: translateY(-2px); }
+        .trail-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .category-badge { font-size: 11px; background: #FBEAF0; color: #993556; padding: 4px 12px; border-radius: 999px; font-weight: 500; }
+        .level-badge { font-size: 11px; background: #f5f5f5; color: #888; padding: 4px 12px; border-radius: 999px; }
+        .trail-title { font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem; }
+        .trail-desc { font-size: 13px; color: #888; line-height: 1.6; }
+        .trail-footer { margin-top: 1.25rem; display: flex; align-items: center; gap: 6px; }
+        .trail-footer span { font-size: 13px; color: #D4537E; font-weight: 500; }
+        .forum-section { background: #FBEAF0; padding: 3.5rem 2rem; }
+        .forum-inner { max-width: 1100px; margin: 0 auto; }
+        .forum-card { background: #fff; border: 1px solid #f0d6e0; border-radius: 12px; padding: 1.25rem; margin-bottom: 12px; cursor: pointer; transition: border-color 0.2s; }
+        .forum-card:hover { border-color: #D4537E; }
+        .forum-tag { font-size: 11px; background: #FBEAF0; color: #993556; padding: 3px 12px; border-radius: 999px; margin-bottom: 0.5rem; display: inline-block; font-weight: 500; }
+        .forum-title { font-size: 15px; font-weight: 500; color: #1a1a1a; margin-bottom: 0.25rem; }
+        .forum-meta { font-size: 12px; color: #aaa; }
+        .cta { text-align: center; padding: 5rem 2rem; background: #4B1528; }
+        .cta h2 { font-size: 28px; font-weight: 600; color: #fff; margin-bottom: 1rem; }
+        .cta p { font-size: 16px; color: #F4C0D1; margin-bottom: 2rem; }
+        .btn-white { background: #fff; color: #993556; border: none; border-radius: 8px; padding: 12px 32px; font-size: 15px; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 600; transition: background 0.2s; }
+        .btn-white:hover { background: #FBEAF0; }
+        footer { padding: 2rem; border-top: 1px solid #f0d6e0; text-align: center; }
+        footer p { font-size: 13px; color: #aaa; }
+        footer span { color: #D4537E; }
+        .loading { text-align: center; padding: 2rem; color: #aaa; font-size: 14px; }
+        .empty { text-align: center; padding: 3rem; color: #aaa; font-size: 14px; }
+        @media (max-width: 600px) {
+          .hero h1 { font-size: 28px; }
+          .nav-links { display: none; }
+          .stats { gap: 2rem; }
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="logo">SheCode</div>
+    <div class="nav-links">
+        <a href="#trilhas">Trilhas</a>
+        <a href="#comunidade">Comunidade</a>
+        <a href="#sobre">Sobre</a>
+    </div>
+    <button class="btn-primary">Entrar</button>
+</nav>
+
+<section class="hero">
+    <div class="hero-badge">Feito por mulheres, para mulheres</div>
+    <h1>Seu espaço seguro<br>para aprender tech</h1>
+    <p>Trilhas de aprendizado gratuitas e uma comunidade acolhedora para você entrar ou crescer no mundo da tecnologia.</p>
+    <div class="hero-buttons">
+        <button class="btn-primary" onclick="document.getElementById('trilhas').scrollIntoView({behavior:'smooth'})">Explorar trilhas</button>
+        <button class="btn-outline" onclick="document.getElementById('comunidade').scrollIntoView({behavior:'smooth'})">Conhecer a comunidade</button>
+    </div>
+</section>
+
+<div class="stats">
+    <div class="stat">
+        <div class="stat-number" id="stat-trails">...</div>
+        <div class="stat-label">Trilhas gratuitas</div>
+    </div>
+    <div class="stat">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Gratuito</div>
+    </div>
+    <div class="stat">
+        <div class="stat-number">Todas</div>
+        <div class="stat-label">as áreas de tech</div>
+    </div>
+</div>
+
+<div class="section" id="trilhas">
+    <h2 class="section-title">Trilhas de aprendizado</h2>
+    <p class="section-sub">Escolha por onde quer começar — cada trilha foi pensada para você.</p>
+    <div class="filter-bar" id="filter-bar">
+        <button class="filter-btn active" onclick="filterTrails('todas', this)">Todas</button>
+    </div>
+    <div class="trails-grid" id="trails-grid">
+        <div class="loading">Carregando trilhas...</div>
+    </div>
+</div>
+
+<section class="forum-section" id="comunidade">
+    <div class="forum-inner">
+        <h2 class="section-title">Comunidade</h2>
+        <p class="section-sub">Um espaço seguro para tirar dúvidas, compartilhar conquistas e se conectar.</p>
+        <div id="forum-posts">
+            <div class="loading">Carregando posts...</div>
+        </div>
+        <button class="btn-outline" style="margin-top:1rem;">Ver todos os posts</button>
+    </div>
+</section>
+
+<section class="cta" id="sobre">
+    <h2>Pronta para começar sua jornada?</h2>
+    <p>Junte-se a uma comunidade de mulheres que estão transformando suas carreiras com tecnologia.</p>
+    <button class="btn-white">Criar minha conta</button>
+</section>
+
+<footer>
+    <p>Feito com <span>amor</span> para mulheres em tech · SheCode 2026</p>
+</footer>
+
+<script>
+    const API = 'https://plataforma-para-mulheres-em-tech.onrender.com';
+    let allTrails = [];
+
+    async function loadTrails() {
+      try {
+        const res = await fetch(`${API}/trails`);
+        const trails = await res.json();
+        allTrails = trails;
+        document.getElementById('stat-trails').textContent = trails.length + '+';
+        const categories = [...new Set(trails.map(t => t.category))];
+        const filterBar = document.getElementById('filter-bar');
+        categories.forEach(cat => {
+          const btn = document.createElement('button');
+          btn.className = 'filter-btn';
+          btn.textContent = cat;
+          btn.onclick = function() { filterTrails(cat, this); };
+          filterBar.appendChild(btn);
+        });
+        renderTrails(trails);
+      } catch (e) {
+        document.getElementById('trails-grid').innerHTML = '<div class="empty">Não foi possível carregar as trilhas.</div>';
+      }
+    }
+
+    function renderTrails(trails) {
+      const grid = document.getElementById('trails-grid');
+      if (trails.length === 0) {
+        grid.innerHTML = '<div class="empty">Nenhuma trilha encontrada.</div>';
+        return;
+      }
+      grid.innerHTML = trails.map(t => `
+        <div class="trail-card">
+          <div class="trail-card-top">
+            <span class="category-badge">${t.category}</span>
+            <span class="level-badge">${t.level}</span>
+          </div>
+          <div class="trail-title">${t.topic}</div>
+          <div class="trail-desc">${t.description}</div>
+          <div class="trail-footer"><span>Ver trilha →</span></div>
+        </div>
+      `).join('');
+    }
+
+    function filterTrails(category, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (category === 'todas') {
+        renderTrails(allTrails);
+      } else {
+        renderTrails(allTrails.filter(t => t.category === category));
+      }
+    }
+
+    async function loadForum() {
+      try {
+        const res = await fetch(`${API}/forum/posts`);
+        const posts = await res.json();
+        const container = document.getElementById('forum-posts');
+        if (posts.length === 0) {
+          container.innerHTML = '<div class="empty">Nenhum post ainda. Seja a primeira a postar!</div>';
+          return;
+        }
+        container.innerHTML = posts.slice(0, 3).map(p => `
+          <div class="forum-card">
+            <span class="forum-tag">${p.category}</span>
+            <div class="forum-title">${p.title}</div>
+            <div class="forum-meta">Postado por ${p.author ? p.author.name : 'Anônima'} · ${p.answers ? p.answers.length : 0} respostas</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        document.getElementById('forum-posts').innerHTML = '<div class="empty">Não foi possível carregar os posts.</div>';
+      }
+    }
+
+    loadTrails();
+    loadForum();
+</script>
+</body>
+</html>
