@@ -253,6 +253,7 @@ loadTrails();
         if (!res.ok) throw new Error('Email ou senha incorretos');
         const data = await res.json();
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userName', nome);
         fecharModal();
         atualizarNavbar();
       } catch (e) {
@@ -275,6 +276,7 @@ loadTrails();
         if (!res.ok) throw new Error('Erro ao criar conta');
         const data = await res.json();
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userName', email.split('@')[0]);
         fecharModal();
         atualizarNavbar();
       } catch (e) {
@@ -284,19 +286,67 @@ loadTrails();
     }
 
     function atualizarNavbar() {
-      const token = localStorage.getItem('token');
-      const btn = document.querySelector('nav .btn-primary');
-      if (token) {
-        btn.textContent = 'Sair';
-        btn.onclick = () => {
-          localStorage.removeItem('token');
-          atualizarNavbar();
-        };
-      } else {
-        btn.textContent = 'Entrar';
-        btn.onclick = abrirModal;
-      }
+  const token = localStorage.getItem('token');
+  const nome = localStorage.getItem('userName') || 'Usuária';
+  const foto = localStorage.getItem('userPhoto') || null;
+  const nav = document.querySelector('nav');
+  const btn = document.querySelector('nav .btn-primary');
+
+  if (token) {
+    btn.style.display = 'none';
+
+    if (!document.getElementById('perfil-menu')) {
+      const perfil = document.createElement('div');
+      perfil.id = 'perfil-menu';
+      perfil.style.cssText = 'position:relative; cursor:pointer;';
+      perfil.innerHTML = `
+        <div id="perfil-trigger" onclick="toggleMenu()" style="display:flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid #f0d6e0; border-radius:999px; background:#fff;">
+          ${foto
+            ? `<img src="${foto}" width="28" height="28" style="border-radius:50%; object-fit:cover;" />`
+            : `<div style="width:28px; height:28px; border-radius:50%; background:#993556; display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px; font-weight:600;">${nome.charAt(0).toUpperCase()}</div>`
+          }
+          <span style="font-size:14px; color:#1a1a1a; font-weight:500;">${nome.split(' ')[0]}</span>
+          <span style="font-size:10px; color:#888;">▼</span>
+        </div>
+        <div id="perfil-dropdown" style="display:none; position:absolute; right:0; top:calc(100% + 8px); background:#fff; border:1px solid #f0d6e0; border-radius:12px; padding:0.75rem; min-width:200px; box-shadow:0 4px 20px rgba(0,0,0,0.1); z-index:200;">
+          <p style="font-size:13px; color:#888; padding:4px 8px; margin-bottom:8px;">Bem-vinda de volta, ${nome.split(' ')[0]}! 💜</p>
+          <hr style="border:none; border-top:1px solid #f0d6e0; margin-bottom:8px;" />
+          <a href="#" style="display:block; padding:8px; font-size:14px; color:#1a1a1a; text-decoration:none; border-radius:8px;" onmouseover="this.style.background='#FBEAF0'" onmouseout="this.style.background='transparent'">Meu perfil</a>
+          <a href="#" style="display:block; padding:8px; font-size:14px; color:#1a1a1a; text-decoration:none; border-radius:8px;" onmouseover="this.style.background='#FBEAF0'" onmouseout="this.style.background='transparent'">Minhas trilhas</a>
+          <a href="#" style="display:block; padding:8px; font-size:14px; color:#1a1a1a; text-decoration:none; border-radius:8px;" onmouseover="this.style.background='#FBEAF0'" onmouseout="this.style.background='transparent'">Configurações</a>
+          <hr style="border:none; border-top:1px solid #f0d6e0; margin:8px 0;" />
+          <a href="#" onclick="sair()" style="display:block; padding:8px; font-size:14px; color:#D4537E; text-decoration:none; border-radius:8px;" onmouseover="this.style.background='#FBEAF0'" onmouseout="this.style.background='transparent'">Sair</a>
+        </div>
+      `;
+      nav.appendChild(perfil);
     }
+  } else {
+    btn.style.display = 'block';
+    btn.textContent = 'Entrar';
+    btn.onclick = abrirModal;
+    const perfil = document.getElementById('perfil-menu');
+    if (perfil) perfil.remove();
+  }
+}
+
+function toggleMenu() {
+  const dropdown = document.getElementById('perfil-dropdown');
+  dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+}
+
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('perfil-menu');
+  if (menu && !menu.contains(e.target)) {
+    document.getElementById('perfil-dropdown').style.display = 'none';
+  }
+});
+
+function sair() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('userPhoto');
+  atualizarNavbar();
+}
 
     atualizarNavbar();
 
