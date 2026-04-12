@@ -26,7 +26,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("https://plataforma-para-mulheres-em-tech.vercel.app", true)
+                        .defaultSuccessUrl("https://plataforma-para-mulheres-em-tech.vercel.app?login=success", true)
                 );
         return http.build();
     }
