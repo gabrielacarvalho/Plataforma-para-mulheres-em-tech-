@@ -18,7 +18,13 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers("/trails/**").permitAll()
+                        .requestMatchers("/forum/posts").permitAll()
+                        .requestMatchers("/forum/posts/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("https://plataforma-para-mulheres-em-tech.vercel.app", true)
                 );
         return http.build();
     }
@@ -26,9 +32,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://plataforma-para-mulheres-em-tech.vercel.app"));
+        config.setAllowedOrigins(List.of(
+                "https://plataforma-para-mulheres-em-tech.vercel.app",
+                "http://localhost:8080"
+        ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
         config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
         return new UrlBasedCorsConfigurationSource() {{
             registerCorsConfiguration("/**", config);
         }};
