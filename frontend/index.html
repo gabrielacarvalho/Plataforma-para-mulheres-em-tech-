@@ -74,7 +74,7 @@
         <a href="#comunidade">Comunidade</a>
         <a href="#sobre">Sobre</a>
     </div>
-    <button class="btn-primary">Entrar</button>
+    <button class="btn-primary" onclick="abrirModal()">Entrar</button>
 </nav>
 
 <section class="hero">
@@ -82,7 +82,7 @@
     <h1>Seu espaço seguro<br>para aprender tech</h1>
     <p>Trilhas de aprendizado gratuitas e uma comunidade acolhedora para você entrar ou crescer no mundo da tecnologia.</p>
     <div class="hero-buttons">
-        <button class="btn-primary" onclick="document.getElementById('trilhas').scrollIntoView({behavior:'smooth'})">Explorar trilhas</button>
+        <button class="btn-primary" onclick="abrirModal()">Entrar</button>
         <button class="btn-outline" onclick="document.getElementById('comunidade').scrollIntoView({behavior:'smooth'})">Conhecer a comunidade</button>
     </div>
 </section>
@@ -209,8 +209,135 @@
       }
     }
 
-    loadTrails();
+loadTrails();
     loadForum();
+
+    function abrirModal() {
+      document.getElementById('modal-overlay').style.display = 'flex';
+    }
+
+    function fecharModal() {
+      document.getElementById('modal-overlay').style.display = 'none';
+    }
+
+    function trocarTab(tab) {
+      if (tab === 'login') {
+        document.getElementById('form-login').style.display = 'block';
+        document.getElementById('form-cadastro').style.display = 'none';
+        document.getElementById('tab-login').style.background = '#993556';
+        document.getElementById('tab-login').style.color = '#fff';
+        document.getElementById('tab-cadastro').style.background = '#fff';
+        document.getElementById('tab-cadastro').style.color = '#888';
+        document.getElementById('modal-title').textContent = 'Entrar';
+      } else {
+        document.getElementById('form-login').style.display = 'none';
+        document.getElementById('form-cadastro').style.display = 'block';
+        document.getElementById('tab-cadastro').style.background = '#993556';
+        document.getElementById('tab-cadastro').style.color = '#fff';
+        document.getElementById('tab-login').style.background = '#fff';
+        document.getElementById('tab-login').style.color = '#888';
+        document.getElementById('modal-title').textContent = 'Criar conta';
+      }
+    }
+
+    async function fazerLogin() {
+      const email = document.getElementById('login-email').value;
+      const senha = document.getElementById('login-senha').value;
+      const erro = document.getElementById('login-erro');
+      try {
+        const res = await fetch(`${API}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password: senha })
+        });
+        if (!res.ok) throw new Error('Email ou senha incorretos');
+        const data = await res.json();
+        localStorage.setItem('token', data.token);
+        fecharModal();
+        atualizarNavbar();
+      } catch (e) {
+        erro.textContent = e.message;
+        erro.style.display = 'block';
+      }
+    }
+
+    async function fazerCadastro() {
+      const nome = document.getElementById('cadastro-nome').value;
+      const email = document.getElementById('cadastro-email').value;
+      const senha = document.getElementById('cadastro-senha').value;
+      const erro = document.getElementById('cadastro-erro');
+      try {
+        const res = await fetch(`${API}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: nome, email, password: senha })
+        });
+        if (!res.ok) throw new Error('Erro ao criar conta');
+        const data = await res.json();
+        localStorage.setItem('token', data.token);
+        fecharModal();
+        atualizarNavbar();
+      } catch (e) {
+        erro.textContent = e.message;
+        erro.style.display = 'block';
+      }
+    }
+
+    function atualizarNavbar() {
+      const token = localStorage.getItem('token');
+      const btn = document.querySelector('nav .btn-primary');
+      if (token) {
+        btn.textContent = 'Sair';
+        btn.onclick = () => {
+          localStorage.removeItem('token');
+          atualizarNavbar();
+        };
+      } else {
+        btn.textContent = 'Entrar';
+        btn.onclick = abrirModal;
+      }
+    }
+
+    atualizarNavbar();
 </script>
+<!-- Modal de Login/Cadastro -->
+<div id="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#fff; border-radius:16px; padding:2rem; width:100%; max-width:400px; margin:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <h2 style="font-size:20px; font-weight:600; color:#1a1a1a;" id="modal-title">Entrar</h2>
+            <button onclick="fecharModal()" style="background:none; border:none; font-size:20px; cursor:pointer; color:#888;">×</button>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-bottom:1.5rem;">
+            <button id="tab-login" onclick="trocarTab('login')" style="flex:1; padding:8px; border-radius:8px; border:1.5px solid #993556; background:#993556; color:#fff; cursor:pointer; font-family:'Inter',sans-serif; font-size:14px;">Entrar</button>
+            <button id="tab-cadastro" onclick="trocarTab('cadastro')" style="flex:1; padding:8px; border-radius:8px; border:1.5px solid #f0d6e0; background:#fff; color:#888; cursor:pointer; font-family:'Inter',sans-serif; font-size:14px;">Cadastrar</button>
+        </div>
+
+        <!-- Login -->
+        <div id="form-login">
+            <a href="https://plataforma-para-mulheres-em-tech.onrender.com/oauth2/authorization/google" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px; border:1px solid #f0d6e0; border-radius:8px; text-decoration:none; color:#1a1a1a; font-size:14px; margin-bottom:1rem; font-family:'Inter',sans-serif;">
+                <img src="https://www.google.com/favicon.ico" width="16" height="16" /> Entrar com Google
+            </a>
+            <div style="text-align:center; color:#aaa; font-size:13px; margin-bottom:1rem;">ou</div>
+            <input type="email" id="login-email" placeholder="Seu email" style="width:100%; padding:10px; border:1px solid #f0d6e0; border-radius:8px; margin-bottom:0.75rem; font-family:'Inter',sans-serif; font-size:14px;" />
+            <input type="password" id="login-senha" placeholder="Sua senha" style="width:100%; padding:10px; border:1px solid #f0d6e0; border-radius:8px; margin-bottom:1rem; font-family:'Inter',sans-serif; font-size:14px;" />
+            <button onclick="fazerLogin()" style="width:100%; padding:10px; background:#993556; color:#fff; border:none; border-radius:8px; font-size:15px; cursor:pointer; font-family:'Inter',sans-serif;">Entrar</button>
+            <p id="login-erro" style="color:#D4537E; font-size:13px; margin-top:0.5rem; display:none;"></p>
+        </div>
+
+        <!-- Cadastro -->
+        <div id="form-cadastro" style="display:none;">
+            <a href="https://plataforma-para-mulheres-em-tech.onrender.com/oauth2/authorization/google" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px; border:1px solid #f0d6e0; border-radius:8px; text-decoration:none; color:#1a1a1a; font-size:14px; margin-bottom:1rem; font-family:'Inter',sans-serif;">
+                <img src="https://www.google.com/favicon.ico" width="16" height="16" /> Cadastrar com Google
+            </a>
+            <div style="text-align:center; color:#aaa; font-size:13px; margin-bottom:1rem;">ou</div>
+            <input type="text" id="cadastro-nome" placeholder="Seu nome" style="width:100%; padding:10px; border:1px solid #f0d6e0; border-radius:8px; margin-bottom:0.75rem; font-family:'Inter',sans-serif; font-size:14px;" />
+            <input type="email" id="cadastro-email" placeholder="Seu email" style="width:100%; padding:10px; border:1px solid #f0d6e0; border-radius:8px; margin-bottom:0.75rem; font-family:'Inter',sans-serif; font-size:14px;" />
+            <input type="password" id="cadastro-senha" placeholder="Crie uma senha" style="width:100%; padding:10px; border:1px solid #f0d6e0; border-radius:8px; margin-bottom:1rem; font-family:'Inter',sans-serif; font-size:14px;" />
+            <button onclick="fazerCadastro()" style="width:100%; padding:10px; background:#993556; color:#fff; border:none; border-radius:8px; font-size:15px; cursor:pointer; font-family:'Inter',sans-serif;">Criar conta</button>
+            <p id="cadastro-erro" style="color:#D4537E; font-size:13px; margin-top:0.5rem; display:none;"></p>
+        </div>
+    </div>
+</div>
 </body>
 </html>
