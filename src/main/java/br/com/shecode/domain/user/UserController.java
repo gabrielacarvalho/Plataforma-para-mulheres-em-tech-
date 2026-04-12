@@ -2,6 +2,8 @@ package br.com.shecode.domain.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,5 +35,18 @@ public class UserController {
                 user.getEmail(),
                 user.getAvatarUrl()
         ));
+    }
+
+    @GetMapping("/me/google")
+    public ResponseEntity<User> getMeGoogle(@AuthenticationPrincipal OidcUser oidcUser) {
+        if (oidcUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+        User user = userService.findOrCreate(
+                oidcUser.getFullName(),
+                oidcUser.getEmail(),
+                oidcUser.getPicture()
+        );
+        return ResponseEntity.ok(user);
     }
 }
