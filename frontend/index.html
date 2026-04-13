@@ -392,21 +392,17 @@
     atualizarNavbar();
 
     (async () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('login') === 'success') {
-            localStorage.setItem('token', 'google-authenticated');
-            try {
-                const res = await fetch(`${API}/users/me/google`, { credentials: 'include' });
-                if (res.ok) {
-                    const user = await res.json();
-                    localStorage.setItem('userName', user.name);
-                    localStorage.setItem('userPhoto', user.avatarUrl || '');
-                }
-            } catch (e) {}
-            atualizarNavbar();
-            window.history.replaceState({}, document.title, '/');
-        }
-    })();
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('login') === 'success') {
+        localStorage.setItem('token', 'google-authenticated');
+        const name = urlParams.get('name');
+        const photo = urlParams.get('photo');
+        if (name) localStorage.setItem('userName', decodeURIComponent(name));
+        if (photo) localStorage.setItem('userPhoto', decodeURIComponent(photo));
+        atualizarNavbar();
+        window.history.replaceState({}, document.title, '/');
+    }
+})();
 </script>
 </body>
 </html>
