@@ -31,7 +31,7 @@ public class SecurityConfig {
                             OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
                             String name = oidcUser.getFullName() != null ? oidcUser.getFullName() : "Usuária";
                             String photo = oidcUser.getPicture() != null ? oidcUser.getPicture() : "";
-                            String url = "https://plataforma-para-mulheres-em-tech.vercel.app?login=success&name=" +
+                            String url = "https://shecodebr-gabriela-carvalho.vercel.app?login=success&name=" +
                                     java.net.URLEncoder.encode(name, "UTF-8") + "&photo=" +
                                     java.net.URLEncoder.encode(photo, "UTF-8");
                             response.sendRedirect(url);
@@ -45,6 +45,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
                 "https://plataforma-para-mulheres-em-tech.vercel.app",
+                "https://shecodebr-gabriela-carvalho.vercel.app",
+                "https://shecodebr.vercel.app",
                 "http://localhost:8080",
                 "http://localhost:3000"
         ));
