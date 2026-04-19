@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -55,14 +56,14 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(401);
                             response.setContentType("application/json");
-                            response.getWriter().write("{\"error\": \"" + authException.getClass().getSimpleName() + "\", \"msg\": \"" + authException.getMessage() + "\"}");
+                            response.getWriter().write("{\"error\": \"Unauthorized\"}");
                         })
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/trails/**").permitAll()
-                        .requestMatchers("/forum/posts").permitAll()
-                        .requestMatchers("/forum/posts/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(PathPatternRequestMatcher.withDefaults().matcher("/trails/**")).permitAll()
+                        .requestMatchers(PathPatternRequestMatcher.withDefaults().matcher("/forum/posts")).permitAll()
+                        .requestMatchers(PathPatternRequestMatcher.withDefaults().matcher("/forum/posts/**")).permitAll()
+                        .requestMatchers(PathPatternRequestMatcher.withDefaults().matcher("/auth/**")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
