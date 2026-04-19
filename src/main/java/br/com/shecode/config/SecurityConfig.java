@@ -55,7 +55,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(401);
                             response.setContentType("application/json");
-                            response.getWriter().write("{\"error\": \"Unauthorized\"}");
+                            response.getWriter().write("{\"error\": \"" + authException.getClass().getSimpleName() + "\", \"msg\": \"" + authException.getMessage() + "\"}");
                         })
                 )
                 .authorizeHttpRequests(auth -> auth
