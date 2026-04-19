@@ -20,7 +20,7 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    @Order(1)
+    @Order(-2)
     public SecurityFilterChain oauth2FilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/oauth2/**", "/login/**")
@@ -43,7 +43,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(2)
+    @Order(-1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
