@@ -3,6 +3,7 @@ package br.com.shecode.config;
 import br.com.shecode.domain.auth.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,7 +20,31 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
+    @Order(1)
+    public SecurityFilterChain oauth2FilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/oauth2/**", "/login/**")
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(auth -> auth.baseUri("/oauth2/authorize"))
+                        .successHandler((request, response, authentication) -> {
+                            OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
+                            String name = oidcUser.getFullName() != null ? oidcUser.getFullName() : "Usuária";
+                            String photo = oidcUser.getPicture() != null ? oidcUser.getPicture() : "";
+                            String url = "https://shecodebr-gabriela-carvalho.vercel.app?login=success&name=" +
+                                    java.net.URLEncoder.encode(name, "UTF-8") + "&photo=" +
+                                    java.net.URLEncoder.encode(photo, "UTF-8");
+                            response.sendRedirect(url);
+                        })
+                );
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain apiFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -38,25 +63,9 @@ public class SecurityConfig {
                         .requestMatchers("/forum/posts").permitAll()
                         .requestMatchers("/forum/posts/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/oauth2/**").permitAll()
-                        .requestMatchers("/login/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(auth -> auth
-                                .baseUri("/oauth2/authorize")
-                        )
-                        .successHandler((request, response, authentication) -> {
-                            OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
-                            String name = oidcUser.getFullName() != null ? oidcUser.getFullName() : "Usuária";
-                            String photo = oidcUser.getPicture() != null ? oidcUser.getPicture() : "";
-                            String url = "https://shecodebr-gabriela-carvalho.vercel.app?login=success&name=" +
-                                    java.net.URLEncoder.encode(name, "UTF-8") + "&photo=" +
-                                    java.net.URLEncoder.encode(photo, "UTF-8");
-                            response.sendRedirect(url);
-                        })
-                );
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
