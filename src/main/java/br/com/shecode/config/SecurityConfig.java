@@ -31,6 +31,8 @@ public class SecurityConfig {
                         .requestMatchers("/forum/posts").permitAll()
                         .requestMatchers("/forum/posts/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/oauth2/**").permitAll()
+                        .requestMatchers("/login/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
