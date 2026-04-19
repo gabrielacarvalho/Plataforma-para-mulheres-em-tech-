@@ -27,6 +27,9 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(auth -> auth
+                                .baseUri("/oauth2/authorize")
+                        )
                         .successHandler((request, response, authentication) -> {
                             OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
                             String name = oidcUser.getFullName() != null ? oidcUser.getFullName() : "Usuária";
