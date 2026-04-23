@@ -46,10 +46,10 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
                             String path = request.getRequestURI();
-                            if (path.startsWith("/auth/") ||
-                                    path.startsWith("/trails/") ||
-                                    path.startsWith("/forum/") ||
-                                    path.startsWith("/users/")) {
+                            if (path.startsWith("/auth") ||
+                                    path.startsWith("/trails") ||
+                                    path.startsWith("/forum") ||
+                                    path.startsWith("/users")) {
                                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                                 response.setContentType("application/json");
                                 response.getWriter().write("{\"error\": \"Unauthorized\"}");
