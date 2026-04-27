@@ -25,7 +25,8 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/trails/**",
                                 "/forum/**",
-                                "/users/**"
+                                "/users/**",
+                                "/error"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
